@@ -7,6 +7,7 @@ public class BreakableBlockBehavior : MonoBehaviour
     private Color initial;
     private Color highlighted;
     private BoxCollider[] colliders;
+    private GameObject[] allRovers;
 
     public bool isSelceted = false;
 
@@ -17,17 +18,16 @@ public class BreakableBlockBehavior : MonoBehaviour
     {
         initial = GetComponent<MeshRenderer>().material.color;
         colliders = GetComponents<BoxCollider>();
-	}
-	
-	void Update ()
-    {
-		
+        allRovers = GameObject.FindGameObjectsWithTag("Rover");
 	}
 
     private void OnMouseDown()
     {
         if (!isSelceted)
         {
+            for (int i = 0; i < allRovers.Length; ++i)
+                allRovers[i].SendMessage("AddWork", this.gameObject);
+
             highlighted = GetComponent<MeshRenderer>().material.color;
             highlighted.g = 255;
             GetComponent<MeshRenderer>().material.color = highlighted;
@@ -35,6 +35,9 @@ public class BreakableBlockBehavior : MonoBehaviour
         }
         else
         {
+            for (int i = 0; i < allRovers.Length; ++i)
+                allRovers[i].SendMessage("RemoveWork", this.gameObject);
+
             GetComponent<MeshRenderer>().material.color = initial;
             isSelceted = false;
         }
