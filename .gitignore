@@ -8,11 +8,6 @@
 
 /[Bb]uild/
 
-/[Bb]uilds/
-/Assets/AssetStoreTools*
-Example
-ExportedObj
-
 #Visual Studio files
 .vs/
 
@@ -43,5 +38,4 @@ ExportedObj
 .Trashes
 ehthumbs.db
 Thumbs.db
-*.asmdef
 *.pidb.meta
