@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RoverBehavior : MonoBehaviour {
+public class RoverBehavior : MonoBehaviour
+{
 
     public float moveSpeed = 3f;
     public float rotatingSpeed = 100f;
@@ -12,13 +13,11 @@ public class RoverBehavior : MonoBehaviour {
     private bool isRotatingRight = false;
     private bool isWalking = false;
 
-	// Use this for initialization
 	void Start ()
     {
 		
 	}
 	
-	// Update is called once per frame
 	void Update ()
     {
         if (!isWandering)
