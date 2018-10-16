@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\BreakableBlockBehavior.cs" />
     <Compile Include="Assets\Scripts\RoverBehavior.cs" />
+    <None Include="Assets\Shaders\Outline.shader" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>C:/Users/ivanb/Desktop/Work/RTSGame/RTSGame/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
