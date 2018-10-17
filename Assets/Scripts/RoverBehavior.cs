@@ -43,6 +43,8 @@ public class RoverBehavior : MonoBehaviour
     private List<GridNode> closedGridPoints;
     private List<GridNode> myPath;
 
+    private Thread pathFinding;
+
     void Start ()
     {
         blocksToDestroy = new List<GameObject>();
@@ -162,16 +164,22 @@ public class RoverBehavior : MonoBehaviour
         Physics.Raycast(currBlock, Vector3.right, out blockCheck_right, 1.05f);
         Physics.Raycast(currBlock, Vector3.left, out blockCheck_left, 1.05f);
 
-        Thread.Sleep(500);
-        Debug.DrawRay(currBlock, Vector3.right, Color.red, 10000);
-        Debug.DrawRay(currBlock, Vector3.left, Color.red, 10000);
-        Debug.DrawRay(currBlock, Vector3.forward, Color.red, 10000);
-        Debug.DrawRay(currBlock, Vector3.back, Color.red, 10000);
+        //Thread.Sleep(500);
+        //Debug.DrawRay(currBlock, Vector3.right, Color.red, 10000);
+        //Debug.DrawRay(currBlock, Vector3.left, Color.red, 10000);
+        //Debug.DrawRay(currBlock, Vector3.forward, Color.red, 10000);
+        //Debug.DrawRay(currBlock, Vector3.back, Color.red, 10000);
 
         tempList.Add(BlockCheck(blockCheck_front, _destination));
         tempList.Add(BlockCheck(blockCheck_back, _destination));
         tempList.Add(BlockCheck(blockCheck_right, _destination));
         tempList.Add(BlockCheck(blockCheck_left, _destination));
+
+        for (int i = 0; i < tempList.Count; i++)
+            for (int j = 0; j < tempList.Count; ++j)
+                if (toAdd.F < 10000 && (tempList[i].H == tempList[j].H))
+                    tempList.Remove(RSDTTP(tempList[i], tempList[j]));
+
 
         for (int i = 0; i < tempList.Count - 1; ++i)
             if (toAdd.F > tempList[i].F)
@@ -242,24 +250,24 @@ public class RoverBehavior : MonoBehaviour
                     {
                         tempG = myPath[myPath.Count - 1].G + 1;
                     }
-                    distanceCheck = Physics.RaycastAll(temp.transform.position, (_Destination - temp.transform.position).normalized,
-                        (_Destination - temp.transform.position).magnitude);
+                    //distanceCheck = Physics.RaycastAll(temp.transform.position, (_Destination - temp.transform.position).normalized,
+                    //    (_Destination - temp.transform.position).magnitude);
 
                     //if (tempCounter > 8)
                     //    tempColor = Color.red;
                     //Debug.DrawLine(temp.transform.position, _Destination, tempColor, 10000);
                     //tempCounter++;
 
-                    for (int i = 0; i < distanceCheck.Length - 1; ++i)
-                        if (distanceCheck[i].collider.tag == "GridPoint")
-                            ++tempH;
+                    //for (int i = 0; i < distanceCheck.Length - 1; ++i)
+                    //    if (distanceCheck[i].collider.tag == "GridPoint")
+                    //        ++tempH;
 
                     //Debug.Log("_Destination's position: " + _Destination);
                     //Debug.Log("CurrBlock position: " + temp.transform.position);
                     //Debug.Log("TempH = " + tempH);
                     //Debug.Log("TemG = " + tempG);
 
-                    //tempH = (_Destination - temp.transform.position).magnitude;               //kinda works, but not exactly 'fastest' way
+                    tempH = (_Destination - temp.transform.position).magnitude;               //kinda works, but not exactly 'fastest' way
                     tempF = tempG + tempH;
                     //Debug.Log("TempF = " + tempF);
                     tempGrid = new GridNode(tempG, tempH, tempF, tempPosition);
@@ -272,6 +280,22 @@ public class RoverBehavior : MonoBehaviour
             }
         }
             return new GridNode(0, 0, 10000, Vector3.zero);
+    }
+
+    GridNode RSDTTP(GridNode _first, GridNode _second) //ResolveSameDistanceToTargetProblem (RSDTTP)
+    {
+        Vector3 shortestFirst = endingPoints[0] - _first.position;
+        Vector3 shortestSecond = endingPoints[0] - _second.position;
+
+        for (int i = 1; i < endingPoints.Count; ++i)
+        {
+            if ((endingPoints[i] - _first.position).magnitude < shortestFirst.magnitude)
+                shortestFirst = endingPoints[i] - _first.position;
+            if ((endingPoints[i] - _second.position).magnitude < shortestSecond.magnitude)
+                shortestSecond = endingPoints[i] - _second.position;
+        }
+
+        return shortestFirst.magnitude > shortestSecond.magnitude ? _first : _second;
     }
 
     IEnumerator Wander()
